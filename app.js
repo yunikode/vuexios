@@ -7,18 +7,88 @@ function buildUrl (source) {
 }
 
 Vue.component('news-list', {
-  props: ['sources'],
+  // props: ['sources'],
   data () {
     return {
       results: [],
-      source: null
+      source: null,
+      sources: [],
+      lang: '',
+      cat: '',
+      loading: false
     }
   },
   template: `
   <section class="section">
   <div class="container">
 
-  <h5 class="text-center">Filter by Source</h5>
+  <form action="">
+    <div class="columns is-mobile">
+      <div class="column is-half">
+      <h5 class="text-center">Filter by Language</h5>
+      <div class="field">
+        <p class="control">
+          <label class="radio">
+            <input type="radio" id="en" value="en" v-model="lang">
+            English
+          </label>
+          <label class="radio">
+            <input type="radio" id="de" value="de" v-model="lang">
+            Deutsch
+          </label>
+        </p>
+      </div>
+
+      <h5 class="text-center">Filter by Category</h5>
+      <div class="field">
+        <p class="control">
+          <label class="radio">
+            <input type="radio" id="business" value="business" v-model="cat">
+            Business
+          </label>
+          <label class="radio">
+            <input type="radio" id="entertainment" value="entertainment" v-model="cat">
+            Entertainmant
+          </label>
+          <label class="radio">
+            <input type="radio" id="gaming" value="gaming" v-model="cat">
+            Gaming
+          </label>
+          <label class="radio">
+            <input type="radio" id="general" value="general" v-model="cat">
+            General
+          </label>
+          <label class="radio">
+            <input type="radio" id="music" value="music" v-model="cat">
+            Music
+          </label>
+          <label class="radio">
+            <input type="radio" id="politics" value="politics" v-model="cat">
+            Politics
+          </label>
+          <label class="radio">
+            <input type="radio" id="science-and-nature" value="science-and-nature" v-model="cat">
+            Sciene and Nature
+          </label>
+          <label class="radio">
+            <input type="radio" id="sport" value="sport" v-model="cat">
+            Sport
+          </label>
+          <label class="radio">
+            <input type="radio" id="technology" value="technology" v-model="cat">
+            Technology
+          </label>
+          <label class="radio">
+            <input type="radio" id="" value="" v-model="cat">
+            All
+          </label>
+        </p>
+      </div>
+
+      </div>
+      <div class="column is-half"></div>
+    </div>
+  </form>
   <form>
     <div class="columns is-mobile">
       <div class="column is-half">
@@ -38,7 +108,7 @@ Vue.component('news-list', {
     </div>
   </form>
   </div>
-    <div class="container">
+    <div class="container" v-if="loading">
       <div class="columns is-mobile" v-for="posts in processedPosts">
         <div class="column is-half-mobile is-one-quarter-desktop" v-for="post in posts">
           <div class="card">
@@ -92,15 +162,34 @@ Vue.component('news-list', {
       return chunkedArray
     }
   },
+  watch: {
+    lang: function() {
+      console.log('watcher fired')
+      this.loadSources(this.cat, this.lang)
+    },
+    cat: function() {
+      console.log('watcher fired')
+      this.loadSources(this.cat, this.lang)
+    }
+  },
   methods: {
     getPosts(source) {
+      this.loading = false
+      this.results = []
       let url = buildUrl(source)
       axios.get(url)
         .then(res => {
           this.results = res.data.articles
         })
+        .then(this.loading = true)
         .catch( err => {console.log(err)})
     },
+    loadSources(cat = '', lang = '') {
+      this.sources = []
+      axios.get(`https://newsapi.org/v1/sources?category=${cat}&language=${lang}`)
+      .then(res => {this.sources = res.data.sources})
+      .catch( err => {console.log(err)})
+    }
   }
 })
 
@@ -112,18 +201,18 @@ const vm = new Vue({
     // source: 'bbc-news'
   },
   mounted() {
-    this.loadSources()
+    // this.loadSources()
     // this.getPosts(this.source)
   },
   methods: {
-    getPosts(source) {
-      let url = buildUrl(source)
-      axios.get(url)
-        .then(res => {
-          this.results = res.data.articles
-        })
-        .catch( err => {console.log(err)})
-    },
+    // getPosts(source) {
+    //   let url = buildUrl(source)
+    //   axios.get(url)
+    //     .then(res => {
+    //       this.results = res.data.articles
+    //     })
+    //     .catch( err => {console.log(err)})
+    // },
     loadSources(cat = '', lang = '') {
       axios.get(`https://newsapi.org/v1/sources?category=${cat}&language=${lang}`)
       .then(res => {this.sources = res.data.sources})
