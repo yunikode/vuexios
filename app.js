@@ -15,6 +15,7 @@ Vue.component('news-list', {
       sources: [],
       lang: '',
       cat: '',
+      categories: ['business', 'entertainment', 'gaming', 'general', 'music', 'politics', 'science-and-nature', 'sport', 'technology'],
       loading: false
     }
   },
@@ -39,49 +40,14 @@ Vue.component('news-list', {
         </p>
       </div>
 
-      <h5 class="text-center">Filter by Category</h5>
       <div class="field">
+      <label class="label">Filter by Category</label>
         <p class="control">
-          <label class="radio">
-            <input type="radio" id="business" value="business" v-model="cat">
-            Business
-          </label>
-          <label class="radio">
-            <input type="radio" id="entertainment" value="entertainment" v-model="cat">
-            Entertainmant
-          </label>
-          <label class="radio">
-            <input type="radio" id="gaming" value="gaming" v-model="cat">
-            Gaming
-          </label>
-          <label class="radio">
-            <input type="radio" id="general" value="general" v-model="cat">
-            General
-          </label>
-          <label class="radio">
-            <input type="radio" id="music" value="music" v-model="cat">
-            Music
-          </label>
-          <label class="radio">
-            <input type="radio" id="politics" value="politics" v-model="cat">
-            Politics
-          </label>
-          <label class="radio">
-            <input type="radio" id="science-and-nature" value="science-and-nature" v-model="cat">
-            Sciene and Nature
-          </label>
-          <label class="radio">
-            <input type="radio" id="sport" value="sport" v-model="cat">
-            Sport
-          </label>
-          <label class="radio">
-            <input type="radio" id="technology" value="technology" v-model="cat">
-            Technology
-          </label>
-          <label class="radio">
-            <input type="radio" id="" value="" v-model="cat">
-            All
-          </label>
+          <span class="select">
+            <select v-model="cat">
+              <option :value="category" v-for="category in categories">{{ category }}</option>
+            </select>
+          </span>
         </p>
       </div>
 
